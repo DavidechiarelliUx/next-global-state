@@ -1,0 +1,20 @@
+
+.todo-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .todo-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  
+    &.completed {
+      color: green;
+    }
+  
+    &.not-completed {
+      color: red;
+    }
+  }
+  
