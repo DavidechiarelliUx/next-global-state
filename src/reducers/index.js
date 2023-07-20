@@ -9,10 +9,17 @@ export const initialState = {
 };
 
 const mainReducer = (state, action) => {
+     
+    
   switch (action.type) {
+    case "SET_DATABASE":
+        return {
+          ...state,
+          todos: action.payload,
+        };
     case "SET_USERNAME":
       return { ...state, username: action.payload };
-    // Puoi aggiungere altri tipi di azione qui se necessario
+
     default:
       return state;
   }

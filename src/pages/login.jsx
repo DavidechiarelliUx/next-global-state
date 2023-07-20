@@ -1,22 +1,43 @@
-// login.jsx
-// src/pages/login.jsx
-import React, { useState, useContext } from "react";
-import { useRouter } from "next/router";
+import React, { useState, useContext, useEffect } from "react";
 import { MainContext } from "@/reducers";
+import styles from "@/styles/login.module.scss";
+import { signInWithPopup } from "firebase/auth";
+// import { Auth } from "firebase/auth";
+
+import { auth, provider} from "@/plugins/firebaseConfig";
+
 
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const { dispatch } = useContext(MainContext);
-  const router = useRouter();
-
-  const handleLogin = () => {
+//     signInWithPopup(auth, provider)
+// console.log(auth)
+ 
   
-    dispatch({ type: "SET_USERNAME", payload: username });
-    router.push("/"); 
-  }
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const { dispatch } = useContext(MainContext);
+
+  const onHandleSubmit = (e) => {
+    e.preventDefault();
+    dispatch({ type: "SET_USERNAME", payload: input });
+    router.push("/");
+  };
+  const handleLogin = () => {
+    const user = {
+      username,
+      email,
+    };
+    dispatch({ type: "SET_USERNAME", payload: user });
+  };
+  const onHandleGoogleAuth = async () => {
+    const res = await signInWithPopup(auth, provider);
+
+    dispatch({ type: "SET_USERNAME", payload: res.user.email });
+  };
 
   return (
-    <div>
+    <div className={styles.container}>
       <h1>Login</h1>
       <input
         type="text"
@@ -24,6 +45,28 @@ const Login = () => {
         onChange={(e) => setUsername(e.target.value)}
         placeholder="Username"
       />
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+      />
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+      />
+      <label className={styles.checkbox}>
+        <input
+          type="checkbox"
+          className={styles.checkbox}
+          checked={isConfirmed}
+          onChange={(e) => setIsConfirmed(e.target.checked)}
+        />
+        Confirm
+      </label>
+      <button onClick={ onHandleGoogleAuth}>Accedi con Google</button>
       <button onClick={handleLogin}>Login</button>
     </div>
   );

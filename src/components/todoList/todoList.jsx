@@ -1,14 +1,14 @@
 import React, { useContext, useState } from 'react';
 import { todoReducer } from "@/reducers/todoReducer"
 import { TodoContext } from '../../context/todoContext';
-import styles from './TodoList.module.scss';
+import styles from "@/components/todoList/todoList.module.scss";
 
 const TodoList = () => {
   const { state, addTodo, removeTodo } = useContext(TodoContext);
   const [newTodo, setNewTodo] = useState('');
 
   const handleAdd = () => {
-    if (newTodo.trim() !== '') {
+    if (newTodo !== '') { 
       addTodo({
         id: Date.now(),
         title: newTodo,
@@ -50,3 +50,4 @@ const TodoList = () => {
 };
 
 export default TodoList;
+

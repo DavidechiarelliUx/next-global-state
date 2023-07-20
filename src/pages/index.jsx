@@ -1,33 +1,23 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useLayoutEffect } from "react";
 import { TodoProvider } from "../context/todoContext";
 import TodoList from "../components/todoList";
+import { todoReducer } from "@/reducers/todoReducer";
 import { MainContext } from "@/reducers";
+import Login from "./login";
+import {db} from "@/plugins/firebaseConfig"
+import { collection, getDocs } from "firebase/firestore"; 
 
-const Login = () => {
-  const [username, setUsername] = useState("");
-  const { dispatch } = useContext(MainContext);
+export default function Home ({data}) {
 
-  const handleLogin = () => {
-    dispatch({ type: "SET_USERNAME", payload: username });
-  };
+  useLayoutEffect(() => {
+    dispatch({ type: "SET_DATABASE", payload: data });
+  }, []);
 
-  return (
-    <div>
-      <h1>Login</h1>
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
-      />
-      <button onClick={handleLogin}>Login</button>
-    </div>
-  );
-};
 
-const Home = () => {
-  const { state } = useContext(MainContext);
 
+
+  const { state, dispatch } = useContext(MainContext);
+  console.log(data)
   return (
     <TodoProvider>
       {state.username ? (
@@ -42,6 +32,20 @@ const Home = () => {
   );
 };
 
-export default Home;
+export async function getServerSideProps(context) {
+  const data = [];
+  const querySnapshot = await getDocs(collection(db, "todoList"));
+
+  querySnapshot.forEach((doc) => {
+    data.push({ ...doc.data(), id: doc.id });
+  });
+
+  return {
+    props: {
+      data,
+    },
+  };
+}
+
 
 
